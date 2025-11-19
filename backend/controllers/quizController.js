@@ -27,10 +27,14 @@ const deleteAllQuizzes = async (req, res) => {
  */
 const createQuizWithAI = async (req, res) => {
   try {
+    console.log('🎯 createQuizWithAI - Request received');
+    console.log('📦 Request body:', req.body);
+    
     const { title, description, category, difficulty, numberOfQuestions = 5 } = req.body;
 
     // Validasi input
     if (!category || !difficulty) {
+      console.log('❌ Validation failed: missing category or difficulty');
       return res.status(400).json({
         success: false,
         message: 'Category and difficulty are required'
@@ -47,13 +51,19 @@ const createQuizWithAI = async (req, res) => {
       difficulty,
       numberOfQuestions
     });
+    
+    console.log('✅ Questions generated, count:', aiQuestions.length);
 
     // Validate questions
+    console.log('🔍 Validating questions...');
     if (!validateQuestions(aiQuestions)) {
+      console.error('❌ Validation failed for AI questions');
       throw new Error('AI generated invalid questions');
     }
+    console.log('✅ Questions validated successfully');
 
     // Buat quiz
+    console.log('📝 Creating quiz in database...');
     const quiz = await Quiz.create({
       title: quizTitle,
       description: description || `AI Generated ${category} Quiz - ${difficulty} level`,
@@ -61,20 +71,24 @@ const createQuizWithAI = async (req, res) => {
       difficulty,
       isAIGenerated: true
     });
+    console.log('✅ Quiz created with ID:', quiz.id);
 
     // Buat questions
-    const questionPromises = aiQuestions.map(q =>
-      Question.create({
+    console.log('📝 Creating questions in database...');
+    const questionPromises = aiQuestions.map((q, idx) => {
+      console.log(`  Question ${idx + 1}:`, q.question.substring(0, 50) + '...');
+      return Question.create({
         quizId: quiz.id,
         question: q.question,
         options: q.options,
         correctAnswer: q.correctAnswer,
         timeLimit: q.timeLimit,
         points: q.points
-      })
-    );
+      });
+    });
 
     const questions = await Promise.all(questionPromises);
+    console.log('✅ All questions created successfully');
 
     res.status(201).json({
       success: true,

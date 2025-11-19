@@ -264,12 +264,27 @@ const handleSocketConnection = (io, socket) => {
     try {
       const { roomCode, userId, questionId, answer, timeRemaining } = data;
 
+      console.log('📝 Submit answer:', { roomCode, userId, questionId, answer, timeRemaining });
+
       const question = await Question.findByPk(questionId);
       if (!question) {
+        console.error('❌ Question not found:', questionId);
         return callback({ success: false, message: 'Question not found' });
       }
 
-      const isCorrect = answer === question.correctAnswer;
+      console.log('🔍 Comparing answer:');
+      console.log('  - User answer:', answer, '(type:', typeof answer, ')');
+      console.log('  - Correct answer:', question.correctAnswer, '(type:', typeof question.correctAnswer, ')');
+      console.log('  - Question:', question.question.substring(0, 50) + '...');
+      console.log('  - Options:', question.options);
+
+      // Ensure both are integers for comparison
+      const userAnswer = parseInt(answer);
+      const correctAnswer = parseInt(question.correctAnswer);
+      const isCorrect = userAnswer === correctAnswer;
+      
+      console.log('  - After parseInt - User:', userAnswer, 'Correct:', correctAnswer);
+      console.log('  - Is correct?', isCorrect);
       let points = 0;
       let timeBonus = 0;
 

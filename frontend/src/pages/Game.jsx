@@ -200,6 +200,11 @@ const Game = () => {
 
     const answerToSubmit = answer !== null ? answer : selectedAnswer;
 
+    console.log('🎯 Frontend - Submitting answer:');
+    console.log('  - Answer index:', answerToSubmit, '(type:', typeof answerToSubmit, ')');
+    console.log('  - Selected option:', currentQuestion.options[answerToSubmit]);
+    console.log('  - Question:', currentQuestion.question);
+
     try {
       socket.emit('submitAnswer', {
         roomCode: code,
@@ -208,7 +213,7 @@ const Game = () => {
         answer: answerToSubmit,
         timeRemaining
       }, (response) => {
-        console.log('✅ Answer submitted:', response);
+        console.log('✅ Answer submitted, response:', response);
       });
     } catch (error) {
       console.error('❌ Error submitting answer:', error);

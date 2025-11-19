@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "postgres",
-    "password": "postgres",
+    "password": "enigma580",
     "database": "quiz_game_db",
     "host": "127.0.0.1",
     "dialect": "postgres"

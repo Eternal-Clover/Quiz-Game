@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Music files (add your own music files locally)
+public/music/*.mp3
+public/music/*.wav
+public/music/*.ogg

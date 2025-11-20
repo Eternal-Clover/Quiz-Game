@@ -13,9 +13,14 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
  */
 const generateQuestions = async ({ category, difficulty, numberOfQuestions = 5 }) => {
   try {
+    console.log('🔍 AI Helper - generateQuestions called with:', { category, difficulty, numberOfQuestions });
+    
     if (!GEMINI_API_KEY) {
+      console.error('❌ GEMINI_API_KEY not found!');
       throw new Error('GEMINI_API_KEY not found in environment variables');
     }
+
+    console.log('✅ GEMINI_API_KEY found, length:', GEMINI_API_KEY.length);
 
     const pointsMap = { easy: 100, medium: 200, hard: 300 };
     const timeLimitMap = { easy: 30, medium: 45, hard: 60 };
@@ -45,8 +50,10 @@ Important:
 - Return ONLY the JSON array, no markdown formatting, no code blocks
 - Make sure questions are accurate and well-written`;
 
+    console.log('📡 Sending request to Gemini API...');
+    
     const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         contents: [
           {
@@ -69,6 +76,8 @@ Important:
       }
     );
 
+    console.log('✅ Received response from Gemini API');
+    
     const content = response.data.candidates[0].content.parts[0].text;
     
     console.log('🤖 Gemini AI Response:', content.substring(0, 200) + '...');

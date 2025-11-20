@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 const bcrypt = require("bcryptjs");
-=======
-const bcrypt = require('bcryptjs');
->>>>>>> 5fe4631 (fix:generate question with ai)
 
 /**
  * Hash password menggunakan bcrypt
